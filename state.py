@@ -106,7 +106,7 @@ class State:
 					phase + int(edge/(State.cDots-1))*(State.cDots) + int(edge % (State.cDots-1)),
 					phase + int(edge/(State.cDots-1))*(State.cDots) + int(edge % (State.cDots-1)) + 1)
 				if(x == 1):
-					self.Score[edge] = maxi
+					self.Score[edge] = 1 if maxi else -1
 
 			if(edge >= State.cDots - 1):
 				edge = edge - (State.cDots-1)
@@ -114,7 +114,7 @@ class State:
 					phase + int(edge/(State.cDots-1))*(State.cDots) + int(edge % (State.cDots-1)),
 					phase + int(edge/(State.cDots-1))*(State.cDots) + int(edge % (State.cDots-1)) + 1)
 				if(y == 1):
-					self.Score[edge] = maxi
+					self.Score[edge] = 1 if maxi else -1
 
 		else:
 			e = edge - phase
@@ -122,8 +122,8 @@ class State:
 				x = self.allTrue(edge, edge + 1, 
 					int(e/State.cDots)*(State.cDots-1) + e % State.cDots,
 					(int(e/State.cDots)+1)*(State.cDots-1) + e % State.cDots)
-				if(y == 1):
-					self.Score[int(e/State.cDots)*(State.cDots-1) + e % State.cDots] = maxi
+				if(x == 1):
+					self.Score[int(e/State.cDots)*(State.cDots-1) + e % State.cDots] = 1 if maxi else -1
 
 			if(e % State.cDots != 0):
 				edge = edge - 1
@@ -132,7 +132,7 @@ class State:
 					int(e/State.cDots)*(State.cDots-1) + e % State.cDots,
 					(int(e/State.cDots)+1)*(State.cDots-1) + e % State.cDots)
 				if(y == 1):
-					self.Score[int(e/State.cDots)*(State.cDots-1) + e % State.cDots] = maxi
+					self.Score[int(e/State.cDots)*(State.cDots-1) + e % State.cDots] = 1 if maxi else -1
 
 		return (x + y)
 

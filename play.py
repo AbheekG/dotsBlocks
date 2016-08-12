@@ -13,10 +13,10 @@ from printer import gamePrinter
 # else:
 # 	State.setGrid(rows, cols, False)
 
-State.setGrid(5,5, False)
+State.setGrid(5, 5, False)
 
 # Depth, here for each level of depth ony one player moves
-time_lim = 0.1
+time_lim = 1
 depth = 3
 
 # define start state
@@ -24,6 +24,7 @@ play = State(0, 0, 0, np.zeros(State.nEdges))
 game = np.zeros(State.nEdges)
 
 # You start the game
+print('Play the game by entering the number for the edge.')
 maxi = False
 while(play.nTotal < State.nEdges):
 	start = timer()
@@ -38,9 +39,13 @@ while(play.nTotal < State.nEdges):
 	# if(temp > 1):
 	#depth = depth * 1.035
 
-	gamePrinter(x.Played, x.Score, State.rDots, State.cDots)
-	print('The move was: ', move)
+	print(chr(27) + "[2J")
+	gamePrinter(play.Played, play.Score, State.rDots, State.cDots)
+	
+	print('\n\nThe move was: ', move)
 	print('Depth = ', depth)
+	#print(play.Score)
+	#print('Game = ', game)
 
 	end = timer()
 	if(end - start < time_lim):

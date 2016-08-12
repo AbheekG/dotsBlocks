@@ -5,10 +5,20 @@ import matplotlib.pyplot as plt
 
 from state import State
 
-State.setGrid(4, 4, False)
-iterations = 100000
-alpha = 0.01
-lamda = 0
+# Size of Grid
+# rows = int(input('Enter number of dots rows: '))
+# cols = int(input('Enter number of dots columns: '))
+# if(rows < 1 | cols < 1):
+# 	print('Please enter valid grid.')
+# else:
+# 	State.setGrid(rows, cols, False)
+
+State.setGrid(5, 5, False)
+
+iterations = 1000000
+alpha = 0.02
+# lamda = 0
+# J = []
 
 
 def descent(x, game, pos, maxi):
@@ -18,13 +28,11 @@ def descent(x, game, pos, maxi):
 	#print(x.Played)
 
 	if(beta == 1):
-		y = State.sigmoid(x.result())
+		y = x.result()
 		#print(game, y)
 	else:
 		y = descent(x, game, pos + 1, maxi)
 		y = 0.5 + (y - 0.5) / (beta - 1)
-
-	#print(y, maxi)
 
 	a2 = State.Theta1.dot(a1)
 	a2 = np.concatenate(([1], State.sigmoid(a2)))
@@ -32,6 +40,9 @@ def descent(x, game, pos, maxi):
 	h = State.sigmoid(h)
 
 	#print(y, h)
+	# global J
+	# if(beta == 10):
+	# 	J = J + [-y*np.log(h) - (1-y)*np.log(1-h)]
 
 	delta3 = h - y
 	delta2 = State.Theta2.transpose() * delta3
@@ -53,4 +64,10 @@ for i in range(iterations):
 	start = State(0, 0, 0, np.zeros(State.nEdges))
 	descent(start, game, 0, True)
 
+# axes = plt.gca()
+# axes.set_ylim([0,1])
+# plt.plot(range(len(J)), J)
+# plt.show()
+
+print(State.Theta1, State.Theta2)
 State.save()
