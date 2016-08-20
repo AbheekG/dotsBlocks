@@ -145,54 +145,96 @@ class State:
 		else:
 			return 0
 
-	def value(self, maxi, d):
-		val = 0 if maxi else 1
+	def value(self, maxi, d, alpha, beta):
 		if(d == 0):# or (maxi and d == 1)):
 			param = np.concatenate(([1], self.Played, [self.pAg], [self.pOpp], [maxi]))
 			val = State.compute(param)
 		elif(self.nTotal == State.nEdges):
-			return self.result()
+			val = self.result()
 		else:
+			val = -1 if maxi else 2
 			x = State(self.nTotal, self.pAg, self.pOpp, self.Played.copy())
+			c = int(x.Played.shape[0] - np.sum(x.Played))
+			Moves = np.zeros(c)
+			Values = np.zeros(c)
+
 			for i in range(State.nEdges):
 				if(x.Played[i] == 1):
 					continue
 				else:
-					temp_maxi = maxi ^ x.add(i, maxi)
-					#print('State =',self.nTotal,'Depth =',d,',Value =',val,', Next move =',i,", Maxi =",maxi)
-					if(maxi):
-						val = max(val, x.value(temp_maxi, d-1))
-					else:
-						val = min(val, x.value(temp_maxi, d-1))
-					
-					x.Played[i] = 0
-					x.pAg = self.pAg
-					x.pOpp = self.pOpp
-					x.nTotal = self.nTotal
-		
-		#print(val)
-		return val
+					c = c - 1
+					Moves[c] = i
+					param = np.concatenate(([1], self.Played.copy(), [self.pAg], [self.pOpp], [maxi]))
+					param[i+1] = 1
+					Values[c] = State.compute(param)
 
-	def next_move(self, maxi, d):
-		x = State(self.nTotal, self.pAg, self.pOpp, self.Played.copy())
-		move = -1
-		max_value = -1
-		for i in range(State.nEdges):
-			#print('Checking...', i)
-			if(x.Played[i] == 1):
-				continue
-			else:
+			
+			Moves = Moves[Values.argsort()]
+			if(maxi):
+				Moves = Moves[::-1]
+
+			for i in Moves:
 				temp_maxi = maxi ^ x.add(i, maxi)
-				val = x.value(temp_maxi, d-1)
-				if(val > max_value):
-					#print('State =',self.nTotal,'Depth =',d,',Value =',val,', Next move =',i,", Maxi =",maxi)
-					move = i
-					max_value = val
-				
+				if(maxi):
+					val = max(val, x.value(temp_maxi, d-1, alpha, beta))
+					alpha = max(alpha, val)
+				else:
+					val = min(val, x.value(temp_maxi, d-1, alpha, beta))
+					beta = min(beta, val)
+					
 				x.Played[i] = 0
 				x.pAg = self.pAg
 				x.pOpp = self.pOpp
 				x.nTotal = self.nTotal
+
+				if(beta <= alpha):
+					break
+
+		#print(val)
+		return val
+
+	def next_move(self, maxi, d):
+		alpha = -1
+		beta = 2
+		x = State(self.nTotal, self.pAg, self.pOpp, self.Played.copy())
+		move = -1
+		max_value = -1
+
+		c = int(x.Played.shape[0] - np.sum(x.Played))
+		print(c)
+		Moves = np.zeros(c)
+		Values = np.zeros(c)
+
+		for i in range(State.nEdges):
+			if(x.Played[i] == 1):
+				continue
+			else:
+				c = c - 1
+				Moves[c] = i
+				param = np.concatenate(([1], self.Played.copy(), [self.pAg], [self.pOpp], [maxi]))
+				param[i+1] = 1
+				Values[c] = State.compute(param)
+		
+		Moves = Moves[Values.argsort()]
+		if(maxi):
+			Moves = Moves[::-1]
+
+		for i in Moves:
+			temp_maxi = maxi ^ x.add(i, maxi)
+			val = x.value(temp_maxi, d-1, alpha, beta)
+			if(val > max_value):
+				#print('State =',self.nTotal,'Depth =',d,',Value =',val,', Next move =',i,", Maxi =",maxi)
+				move = i
+				max_value = val
+				alpha = max(alpha, val)
+				
+			x.Played[i] = 0
+			x.pAg = self.pAg
+			x.pOpp = self.pOpp
+			x.nTotal = self.nTotal
+
+			if(beta <= alpha):
+				break
 
 		#print('Move = ', move, ", Max value =", max_value)
 		if(move < 0 or max_value < 0):
