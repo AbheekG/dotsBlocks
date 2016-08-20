@@ -75,11 +75,11 @@ class State:
 		self.Score = np.zeros((State.rDots - 1) * (State.cDots - 1))
 
 	def add(self, edge, maxi):
-		if(self.Played[edge] == 1):
+		if(self.Played[int(edge)] == 1):
 			print('invalid move')
 			return False
 		self.nTotal = self.nTotal + 1
-		self.Played[edge] = 1
+		self.Played[int(edge)] = 1
 
 		point = self.isPoint(edge, maxi)
 		if(point):
@@ -99,6 +99,7 @@ class State:
 	def isPoint(self, edge, maxi):
 		x = 0
 		y = 0
+		edge = int(edge)
 		phase = State.rDots * (State.cDots - 1)
 		if(edge < phase):
 			if(edge <= phase - State.cDots):
@@ -117,7 +118,7 @@ class State:
 					self.Score[edge] = 1 if maxi else -1
 
 		else:
-			e = edge - phase
+			e = int(edge - phase)
 			if(e % State.cDots != State.cDots - 1):
 				x = self.allTrue(edge, edge + 1, 
 					int(e/State.cDots)*(State.cDots-1) + e % State.cDots,
@@ -182,7 +183,7 @@ class State:
 					val = min(val, x.value(temp_maxi, d-1, alpha, beta))
 					beta = min(beta, val)
 					
-				x.Played[i] = 0
+				x.Played[int(i)] = 0
 				x.pAg = self.pAg
 				x.pOpp = self.pOpp
 				x.nTotal = self.nTotal
@@ -201,7 +202,6 @@ class State:
 		max_value = -1
 
 		c = int(x.Played.shape[0] - np.sum(x.Played))
-		print(c)
 		Moves = np.zeros(c)
 		Values = np.zeros(c)
 
@@ -228,7 +228,7 @@ class State:
 				max_value = val
 				alpha = max(alpha, val)
 				
-			x.Played[i] = 0
+			x.Played[int(i)] = 0
 			x.pAg = self.pAg
 			x.pOpp = self.pOpp
 			x.nTotal = self.nTotal
