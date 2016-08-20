@@ -15,7 +15,7 @@ if(rows < 1 | cols < 1):
 else:
 	State.setGrid(rows, cols, False)
 
-# Depth, here for each level of depth ony one player moves
+# Set depth and approximate time limit for move.
 time_lim = 1
 depth = 3
 
@@ -23,11 +23,12 @@ depth = 3
 play = State(0, 0, 0, np.zeros(State.nEdges))
 game = np.zeros(State.nEdges)
 
-# You start the game
+# Start the game
 print('Play the game by entering the number for the edge.')
 maxi = False
 while(play.nTotal < State.nEdges):
 	start = timer()
+	# Get move
 	if(maxi):
 		move = play.next_move(maxi, int(depth))
 	else:
@@ -35,10 +36,8 @@ while(play.nTotal < State.nEdges):
 
 	game[play.nTotal] = move
 	maxi = maxi ^ (play.add(move, maxi))
-	# temp = abs((State.nEdges - play.nTotal)/(State.nEdges - play.nTotal - depth))
-	# if(temp > 1):
-	#depth = depth * 1.035
 
+	# Print game status
 	print(chr(27) + "[2J")
 	gamePrinter(play.Played, play.Score, State.rDots, State.cDots)
 	

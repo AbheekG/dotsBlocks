@@ -3,12 +3,10 @@ import os.path
 
 class State:
 	"""
+	Contains all data and method for a state.
 	First all horizontal edges are numbered left to right, top
-	to down. Then vertical.
+	to down, then vertical.
 	"""
-
-	# Search depth
-
 	# Size of Grid
 	rDots = 0
 	cDots = 0
@@ -21,7 +19,7 @@ class State:
 	Theta1 = np.empty(0)
 	Theta2 = np.empty(0)
 
-	# Change the game details
+	# Change the game (evaluation function) details
 	@classmethod
 	def setGrid(cls, r=4, c=4, newData=False):
 		cls.rDots = r
@@ -39,6 +37,7 @@ class State:
 		cls.Theta2 = cls.data[-(cls.nHidden+1):]
 		cls.Theta2 = cls.Theta2.reshape((1, cls.nHidden+1))
 
+	# Save updated thetas to file.
 	@classmethod
 	def save(cls):
 		t1 = cls.Theta1.reshape(cls.Theta1.shape[0] * cls.Theta1.shape[1])
@@ -55,6 +54,7 @@ class State:
 		g = cls.sigmoid(z)
 		return g.dot(1 - g)
 
+	# Evaluation function
 	@classmethod
 	def compute(cls, param):
 		z1 = State.Theta1.dot(param)
@@ -74,6 +74,7 @@ class State:
 		self.Played = Played
 		self.Score = np.zeros((State.rDots - 1) * (State.cDots - 1))
 
+	# Adding an edge to grid/ playing a move.
 	def add(self, edge, maxi):
 		if(self.Played[int(edge)] == 1):
 			print('invalid move')
@@ -90,12 +91,14 @@ class State:
 
 		return (point == 0)
 
+	# Check for an occupied block
 	def allTrue(self, a, b, c, d):
 		if(self.Played[a] > 0.5 and self.Played[b] > 0.5 and self.Played[c] > 0.5 and self.Played[d] > 0.5):
 			return 1
 		else:
 			return 0
 
+	# Check that adding given edge causes points
 	def isPoint(self, edge, maxi):
 		x = 0
 		y = 0
@@ -138,6 +141,7 @@ class State:
 		return (x + y)
 
 
+	# Final result of game
 	def result(self):
 		if(self.pAg > self.pOpp):
 			return 1
@@ -146,6 +150,7 @@ class State:
 		else:
 			return 0
 
+	# Returns the value of state
 	def value(self, maxi, d, alpha, beta):
 		if(d == 0):# or (maxi and d == 1)):
 			param = np.concatenate(([1], self.Played, [self.pAg], [self.pOpp], [maxi]))
@@ -194,6 +199,7 @@ class State:
 		#print(val)
 		return val
 
+	# Returns the next move to be played
 	def next_move(self, maxi, d):
 		alpha = -1
 		beta = 2
