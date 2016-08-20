@@ -5,15 +5,15 @@ import matplotlib.pyplot as plt
 from state import State
 from printer import gamePrinter
 
-# Size of Grid
-# rows = int(input('Enter number of dots rows: '))
-# cols = int(input('Enter number of dots columns: '))
-# if(rows < 1 | cols < 1):
-# 	print('Please enter valid grid.')
-# else:
-# 	State.setGrid(rows, cols, False)
-
-State.setGrid(5, 5, False)
+#Size of Grid
+rows = int(input('Enter number of dots rows: '))
+cols = int(input('Enter number of dots columns: '))
+if(rows < cols):
+	rows, cols = cols, rows
+if(rows < 1 | cols < 1):
+	print('Please enter valid grid.')
+else:
+	State.setGrid(rows, cols, False)
 
 # Depth, here for each level of depth ony one player moves
 time_lim = 1
@@ -48,9 +48,11 @@ while(play.nTotal < State.nEdges):
 	#print('Game = ', game)
 
 	end = timer()
+	print('Time taken for move = ', end - start)
 	if(end - start < time_lim):
 		depth = depth + 1
 
+print('The game play was: ', game)
 if(play.result() == 1):
 	print('Sorry. You lost.')
 elif(play.result() == 0.5):

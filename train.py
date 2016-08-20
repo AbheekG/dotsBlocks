@@ -5,16 +5,18 @@ import matplotlib.pyplot as plt
 
 from state import State
 
-# Size of Grid
-# rows = int(input('Enter number of dots rows: '))
-# cols = int(input('Enter number of dots columns: '))
-# if(rows < 1 | cols < 1):
-# 	print('Please enter valid grid.')
-# else:
-# 	State.setGrid(rows, cols, False)
+#Size of Grid
+rows = int(input('Enter number of dots rows: '))
+cols = int(input('Enter number of dots columns: '))
+if(rows < cols):
+	rows, cols = cols, rows
+if(rows < 1 | cols < 1):
+	print('Please enter valid grid.')
+else:
+	State.setGrid(rows, cols, False)
 
-State.setGrid(5, 5, False)
-
+# iterations = int(input('Enter number of iterations: '))
+# alpha = float(input('Enter alpha: '))
 iterations = 1000000
 alpha = 0.02
 # lamda = 0
